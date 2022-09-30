@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
-import { ViewStyle } from "react-native";
+import { Platform, ViewStyle } from "react-native";
 
 import Animated, {
   useAnimatedKeyboard,
@@ -53,7 +53,7 @@ export const CommentInputBox = forwardRef<
   const buttonContainerAnimatedStyle = useAnimatedStyle(() => {
     return {
       position: "absolute",
-      bottom: 0,
+      bottom: Platform.OS === "android" ? -50 : 0,
       width: "100%",
       transform: [
         {

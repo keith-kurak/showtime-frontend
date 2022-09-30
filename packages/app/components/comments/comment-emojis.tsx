@@ -1,7 +1,6 @@
 import React from "react";
-import { Pressable } from "react-native";
+import { Pressable, Text } from "react-native";
 
-import { Text } from "@showtime-xyz/universal.text";
 import { View } from "@showtime-xyz/universal.view";
 
 export const CommentEmojis = ({
@@ -17,7 +16,7 @@ export const CommentEmojis = ({
           style={{ padding: 16 }}
           onPress={() => onEmojiSelect(emoji)}
         >
-          <Text tw="text-2xl">{emoji}</Text>
+          <Text style={{ fontSize: 24 }}>{emoji}</Text>
         </Pressable>
       ))}
     </View>
