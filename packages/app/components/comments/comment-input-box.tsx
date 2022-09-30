@@ -1,6 +1,11 @@
 import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { ViewStyle } from "react-native";
 
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+
 import { useAlert } from "@showtime-xyz/universal.alert";
 import { Button } from "@showtime-xyz/universal.button";
 import { Close } from "@showtime-xyz/universal.icon";
@@ -10,9 +15,10 @@ import { View } from "@showtime-xyz/universal.view";
 
 import { MessageBox } from "app/components/messages/message-box";
 import { CommentType } from "app/hooks/api/use-comments";
-import { useKeyboardVisible } from "app/hooks/use-keyboard-visible";
 import { useUser } from "app/hooks/use-user";
 import { formatAddressShort } from "app/utilities";
+
+import { CommentEmojis } from "./comment-emojis";
 
 interface CommentInputBoxProps {
   submitting?: boolean;
@@ -34,7 +40,6 @@ export const CommentInputBox = forwardRef<
 >(function CommentInputBox({ submitting, submit, commentInputRef }, ref) {
   //#region variables
   const Alert = useAlert();
-  const { visible } = useKeyboardVisible();
 
   const [selectedComment, setSelectedComment] = useState<CommentType | null>(
     null
@@ -42,6 +47,21 @@ export const CommentInputBox = forwardRef<
   const { bottom } = useSafeAreaInsets();
   const { user } = useUser();
   //#endregion
+
+  const keyboardHeight = useAnimatedKeyboard();
+
+  const buttonContainerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      position: "absolute",
+      bottom: 0,
+      width: "100%",
+      transform: [
+        {
+          translateY: -Math.max(keyboardHeight.height.value, bottom),
+        },
+      ],
+    };
+  });
 
   //#region callbacks
   const handleOnSubmitComment = useCallback(
@@ -88,7 +108,7 @@ export const CommentInputBox = forwardRef<
     reply: handleReply,
   }));
   return (
-    <>
+    <Animated.View style={buttonContainerAnimatedStyle}>
       {selectedComment && (
         <View tw="flex-row items-center justify-between bg-gray-100 px-4 dark:bg-white">
           <Text tw="py-2 text-xs font-bold">{`Reply to @${getUsername(
@@ -109,12 +129,16 @@ export const CommentInputBox = forwardRef<
         submitting={submitting}
         style={{
           paddingHorizontal: 16,
-          marginBottom: Math.max(0, bottom - (visible ? 8 : 0)),
           paddingBottom: 0,
         }}
         onSubmit={handleOnSubmitComment}
         userAvatar={user?.data.profile.img_url}
       />
-    </>
+      <CommentEmojis
+        onEmojiSelect={(v) => {
+          commentInputRef.current?.setValue(commentInputRef.current?.value + v);
+        }}
+      />
+    </Animated.View>
   );
 });

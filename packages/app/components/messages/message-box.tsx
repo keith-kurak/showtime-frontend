@@ -73,14 +73,12 @@ export const MessageBox = forwardRef<MessageBoxMethods, MessageBoxProps>(
         reset: handleReset,
         focus: handleFocus,
         setValue,
+        value,
       }),
-      [handleReset, handleFocus]
+      [handleReset, handleFocus, value]
     );
     return (
-      <View
-        tw="flex-row items-center bg-white py-4 dark:bg-black"
-        style={style}
-      >
+      <View tw="flex-row items-center dark:bg-black" style={style}>
         <View tw="mr-2 flex-1">
           <TextInput
             //@ts-ignore
