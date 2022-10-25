@@ -1,6 +1,8 @@
 import * as React from "react";
 import { createContext, useState, useContext } from "react";
 
+import { OAuthExtension } from "@magic-ext/oauth";
+import { Magic } from "magic-sdk";
 import Script from "next/script";
 
 import { isServer } from "app/lib/is-server";
@@ -15,10 +17,8 @@ export const MagicProvider = ({ children }: any) => {
 
   const onMagicLoad = () => {
     const isMumbai = process.env.NEXT_PUBLIC_CHAIN_ID === "mumbai";
-    const Magic = (window as Window & typeof globalThis & { Magic: any })
-      ?.Magic;
 
-    if (Magic) {
+    if (Magic && OAuthExtension) {
       // Default to polygon chain
       const customNodeOptions = {
         rpcUrl: "https://rpc-mainnet.maticvigil.com/",
@@ -35,10 +35,15 @@ export const MagicProvider = ({ children }: any) => {
       setMagic(
         new Magic(process.env.NEXT_PUBLIC_MAGIC_PUB_KEY, {
           network: customNodeOptions,
+          extensions: [new OAuthExtension()],
         })
       );
     }
   };
+
+  React.useEffect(() => {
+    onMagicLoad();
+  }, []);
 
   return (
     <MagicContext.Provider
@@ -51,7 +56,12 @@ export const MagicProvider = ({ children }: any) => {
     >
       <Script
         src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
+        onLoad={onMagicLoad}
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/@magic-ext/oauth/dist/extension.js"
+        strategy="beforeInteractive"
         onLoad={onMagicLoad}
       />
       {children}
