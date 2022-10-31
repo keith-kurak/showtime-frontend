@@ -25,6 +25,10 @@ class Document extends NextDocument {
             href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
             rel="stylesheet"
           />
+          <script
+            src="https://js-cdn.music.apple.com/musickit/v3/musickit.js"
+            async
+          ></script>
         </Head>
         <body className="!max-w-screen">
           <Main />
