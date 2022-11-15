@@ -70,6 +70,9 @@ export interface WalletAddressesV2 {
   minting_enabled: boolean;
   email: string;
   is_email: number;
+  is_twitter: number;
+  is_google: number;
+  is_apple: number;
   phone_number: string;
   is_phone: number;
   nickname?: string;
@@ -200,6 +203,7 @@ export type IEdition = {
   symbol: string;
   is_gated?: boolean;
   is_spotify_gated?: boolean;
+  is_password_gated?: boolean;
 };
 
 export type MyInfo = {
